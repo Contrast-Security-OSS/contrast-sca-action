@@ -1,0 +1,57 @@
+name: 'Contrast SCA Action'
+description: 'Contrast Source Composition Analysis'
+inputs:
+  apiKey:
+    description: 'An agent API key provided by Contrast (required).'
+    required: true
+  authHeader:
+    description: 'User authorization credentials provided by Contrast (required).'
+    required: true
+  orgId:
+    description: 'The ID of your organization in Contrast (required).'
+    required: true
+  filePath:
+    description: 'Specify the directory in which to search for project configuration files (required).'
+    required: true
+  apiUrl:
+    description: 'The name of the host. Includes the protocol section of the URL (https://). Defaults to https://ce.contrastsecurity.com. (optional)'
+    required: false
+    default: "https://ce.contrastsecurity.com"
+  severity:
+    description: 'Allows user to report libraries with vulnerabilities above a chosen severity level. Values for level are high, medium or low. (Note: Use this input in combination with the fail input, otherwise the action will exit)'
+    required: false
+  fail:
+    description: 'When set to true, fails the action if CVEs have been detected that match at least the severity option specified.'
+    required: false
+  ignoreDev:
+    description: 'When set to true, excludes developer dependencies from the results.'
+    required: false
+runs:
+  using: "composite"
+  steps:
+    - run: curl --location -O https://pkg.contrastsecurity.com/artifactory/cli/1.0.12/linux/contrast
+      shell: bash
+    - run: chmod +x contrast
+      shell: bash
+    - name: Validate inputs
+      shell: bash
+      run: |
+        if [ -n "${{inputs.severity}}" ]
+        then
+          if [ -z "${{inputs.fail}}" ] || [ "${{inputs.fail}}" != true ]
+          then
+            echo "ERROR: Severity has been set without fail flag. Please set fail to true in order to fail the action if vulnerabilities are found."
+            exit 1
+          fi
+        fi
+        if [ "${{inputs.fail}}" = true ]
+        then
+          echo "FAIL=true" >> $GITHUB_ENV
+        fi
+        if [ "${{inputs.ignoreDev}}" = true ]
+        then
+          echo "IGNORE_DEV=true" >> $GITHUB_ENV
+        fi
+    - id: perform-source-composition-analysis
+      run: SEVERITY=${{ inputs.severity }} && ./contrast audit --file ${{ inputs.filePath }} --api-key ${{ inputs.apiKey }} --authorization ${{ inputs.authHeader }} --organization-id ${{ inputs.orgId }} --host ${{ inputs.apiUrl }} ${IGNORE_DEV:+"--ignore-dev"} ${FAIL:+"--fail"} ${SEVERITY:+"--severity"} ${SEVERITY:+"$SEVERITY"} --save
+      shell: bash
