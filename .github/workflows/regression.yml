@@ -11,7 +11,7 @@ jobs:
           owner: Contrast-Security-Inc
           repo: contrast-github-actions-regression
           github_token: ${{ secrets.SCAN_PAT }}
-          ref: SCAN-4660
+          ref: master
           client_payload: '{"branch_name": "${{ github.event.pull_request.head.ref }}","trigger_repo_url": "${{ github.event.repository.html_url }}","trigger_commit_url": "${{ github.event.head_commit.url }}"}'
           workflow_file_name: test-run-audit.yml
           wait_interval: 10
