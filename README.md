@@ -1,4 +1,4 @@
-# Use Contrast Audit to find your vulnerable dependencies
+# Use Contrast SCA to find your vulnerable dependencies
 This GitHub action lets you use Contrast to detect vulnerable libraries in your code. It looks at project configuration files included in your code, identifies vulnerable dependencies and provides guidance on the versions to update.
 - **Supported languages and their requirements:** 
   - **Java:** pom.xml and Maven build platform including the dependency plugin       
@@ -73,4 +73,4 @@ These instructions assume you already have set up a GitHub workflow to build you
 up. After understanding what a GitHub action is, then come back here to complete the following steps:
 1. Create a branch of your code to add the Contrast Audit action to your workflow. This branch is typically located at `./github/workflows/build.yml`
 2. Add the `contrastaudit-action` to your workflow and commit.
-3. After committing, create a Pull Request (PR) to merge the update back to your main branch. Creating the PR triggers the audit scan to run. The extra "Code Scanning" check appears in the PR.
+3. After committing, create a Pull Request (PR) to merge the update back to your main branch. Creating the PR triggers the Contrast SCA action to run. The extra "Code Scanning" check appears in the PR.
