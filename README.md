@@ -33,7 +33,11 @@ This GitHub action lets you use Contrast to detect vulnerable libraries in your 
 - ignoreDev - When set to true, excludes developer dependencies from the results.
 ## Usage
 All Contrast-related account secrets should be configured as GitHub secrets and will be passed via environment variables in the GitHub runner.
-A simple workflow to get going is:
+
+The following are sample workflows to get started in Java, Node, PHP.
+
+### Java
+
 ```yaml
 on:
   push:
@@ -67,10 +71,73 @@ jobs:
           fail: true
 ```
 
+### Node
+
+```yaml
+name: SCA Node
+
+on:
+  push:
+    branches:
+      - "master"
+
+jobs:
+  perform-sca-node:
+    runs-on: ubuntu-latest
+    steps:
+        # Checkout/build your application/install Node
+      - uses: actions/checkout@v3
+
+      - name: Contrast SCA Action
+        uses: Contrast-Security-OSS/contrast-sca-action@main
+        with:
+          apiKey: ${{ secrets.CONTRAST_API_KEY }}
+          orgId: ${{ secrets.CONTRAST_ORGANIZATION_ID }}
+          authHeader: ${{ secrets.CONTRAST_AUTH_HEADER }}
+          apiUrl: ${{ secrets.CONTRAST_API_URL }}
+          filePath: mypath/to/config/files
+          severity: medium
+          fail: true
+
+```
+
+### PHP
+
+```yaml
+name: SCA PHP
+
+on:
+  push:
+    branches:
+      - "master"
+
+jobs:
+  perform-sca-php:
+    runs-on: ubuntu-latest
+    steps:
+        # Check out/build your application
+      - uses: actions/checkout@v3
+
+        # Install composer
+      - uses: php-actions/composer@v6
+
+      - name: Contrast SCA Action
+        uses: Contrast-Security-OSS/contrast-sca-action@main
+        with:
+          apiKey: ${{ secrets.CONTRAST_API_KEY }}
+          orgId: ${{ secrets.CONTRAST_ORGANIZATION_ID }}
+          authHeader: ${{ secrets.CONTRAST_AUTH_HEADER }}
+          apiUrl: ${{ secrets.CONTRAST_API_URL }}
+          filePath: mypath/to/config/files
+          severity: medium
+          fail: true
+
+```
+
 ## Initial steps for using the action
 These instructions assume you already have set up a GitHub workflow to build your project.  If not, read the
 [GitHub Actions](https://docs.github.com/en/actions) documentation to learn what GitHub Actions are and how to set them
-up. After understanding what a GitHub action is, then come back here to complete the following steps:
+up. After which, complete the following steps:
 1. Create a branch of your code to add the Contrast Audit action to your workflow. This branch is typically located at `./github/workflows/build.yml`
 2. Add the `contrastaudit-action` to your workflow and commit.
 3. After committing, create a Pull Request (PR) to merge the update back to your main branch. Creating the PR triggers the audit scan to run. The extra "Code Scanning" check appears in the PR.
