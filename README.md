@@ -14,25 +14,30 @@ This GitHub action lets you use Contrast to detect vulnerable libraries in your 
   - **Python:** pipfile and pipfile.lock
   - **Go:** go.mod
   - **PHP:** composer.json and composer.lock
-- **CodeSec by Contrast users:** Retrieve authentication details using the command line tool - CodeSec by Contrast.
+- **CodeSec by Contrast users:** Retrieve authentication details using the CLI.
   - Installation instructions here : [https://www.contrastsecurity.com/developer/codesec](https://www.contrastsecurity.com/developer/codesec)
-  - Use the 'contrast auth' and 'contrast config' commands to collect the required credentials.
-- **Licensed Contrast users:** Get these credentials from the user area Contrast web interface:
-  - Authorization header
-  - API key
+  - If you are a new user, create an account with the 'contrast auth' command
+  - The 'contrast config' command can then be used to collect the required credentials.
+- **Licensed Contrast users:** Get your credentials from the 'User Settings' menu in the Contrast web interface: You will need the following 
   - Organization ID
+  - Your API key
+  - Authorization header
+  - You will also need the URL of your Contrast UI host. This input includes the protocol section of the URL (https://). The default value is `https://ce.contrastsecurity.com` (Contrast Community Edition).
+
+All Contrast-related account secrets should be configured as GitHub secrets and will be passed via environment variables in the GitHub runner.
+
 ## Required inputs
 - apiKey - An API key from the Contrast platform.
 - authHeader - User authorization credentials from Contrast.
 - orgId - The ID of your organization in Contrast.
-- filePath - Specify the directory in which to search for project configuration files.
+- filePath - Specify the path for project configuration file (e.g. lib/package.json) .
+- apiUrl - Required for Licensed Contrast Users only. This input includes the protocol section of the URL (https://). The default value is `https://ce.contrastsecurity.com` (Contrast Community Edition).
 ## Optional inputs
-- apiUrl - The URL of the host. This input includes the protocol section of the URL (https://). The default value is `https://ce.contrastsecurity.com` (Contrast Community Edition).
 - severity - Allows user to report libraries with vulnerabilities above a chosen severity level. Values for level are high, medium or low. (Note: Use this input in combination with the fail input, otherwise the action will exit)
 - fail - When set to true, fails the action if CVEs have been detected that match at least the severity option specified.
 - ignoreDev - When set to true, excludes developer dependencies from the results.
 ## Usage
-All Contrast-related account secrets should be configured as GitHub secrets and will be passed via environment variables in the GitHub runner.
+
 
 The following are sample workflows to get started in Java, Node, PHP.
 
@@ -79,7 +84,7 @@ name: SCA Node
 on:
   push:
     branches:
-      - "master"
+      - "main"
 
 jobs:
   perform-sca-node:
@@ -109,7 +114,7 @@ name: SCA PHP
 on:
   push:
     branches:
-      - "master"
+      - "main"
 
 jobs:
   perform-sca-php:
@@ -135,9 +140,13 @@ jobs:
 ```
 
 ## Initial steps for using the action
-These instructions assume you already have set up a GitHub workflow to build your project.  If not, read the
+If you are not familiar with GitHub actions read the
 [GitHub Actions](https://docs.github.com/en/actions) documentation to learn what GitHub Actions are and how to set them
 up. After which, complete the following steps:
-1. Create a branch of your code to add the Contrast Audit action to your workflow. This branch is typically located at `./github/workflows/build.yml`
-2. Add the `contrastaudit-action` to your workflow and commit.
-3. After committing, create a Pull Request (PR) to merge the update back to your main branch. Creating the PR triggers the Contrast SCA action to run. The extra "Code Scanning" check appears in the PR.
+
+1. Configure the following GitHub secrets CONTRAST_API_KEY, CONTRAST_ORGANIZATION_ID, CONTRAST_AUTH_HEADER and CONTRAST_API_URL (CONTRAST_API_URL not required for CodeSec users)
+2. Copy one of the sample workflows above and create a branch of your code to add the Contrast SCA action to your workflow. This branch is typically located at `./github/workflows/build.yml`
+3. Update the workflow file to specify when the action should run (for example on pull_request, on push)
+4. Update the filepath in the workflow file to specfy the location of the project configuration file
+5. To fail based on severity of CVEs found set severity  (critical/high/medium or low) and fail to true
+7. After committing, create a Pull Request (PR) to merge the update back to your main branch. Creating the PR triggers the Contrast SCA action to run. The extra "Code Scanning" check appears in the PR.
