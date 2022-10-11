@@ -23,7 +23,7 @@ up. After which, complete the following steps:
   
     <img width="660" alt="image" src="https://user-images.githubusercontent.com/24421341/195047954-6ade693f-a911-4914-b50c-5121fd77dcae.png">
 
-2. Copy one of the sample workflows below and create a branch of your code to add the Contrast SCA action to your workflow. This branch is typically located at `.github/workflows/build.yml`
+2. Copy one of the sample workflows below and create a branch of your code to add Contrast SCA action. This branch is typically located at `.github/workflows/build.yml`
 3. Update the workflow file to specify when the action should run (for example on pull_request, on push)
    
     ```yaml
@@ -32,21 +32,20 @@ up. After which, complete the following steps:
         branches:
           - "main"
     ```
-5. Update the filepath in the workflow file to specfy the location of the project configuration file where dependencies are declared
+4. Update the filepath in the workflow file to specfy the location of the project configuration file where dependencies are declared
 
     ```yaml
               filePath: package.json
     ```
 
-7. To fail based on severity of CVEs found set severity  (critical/high/medium or low) and fail to true
+5. To fail based on severity of CVEs found set severity  (critical/high/medium or low) and fail to true
 
     ```yaml
               severity: medium
               fail: true
     ```
     
-9. After committing, create a Pull Request (PR) to merge the update back to your main branch. Creating the PR triggers the Contrast SCA action to run. The extra "Code Scanning" check appears in the PR.
-
+6. After committing, create a Pull Request (PR) to merge the update back to your main branch. Creating the PR triggers the Contrast SCA action to run. The extra "Code Scanning" check appears in the PR.
 
 
 ## Usage
