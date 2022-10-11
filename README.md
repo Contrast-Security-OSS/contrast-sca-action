@@ -23,7 +23,7 @@ up. After which, complete the following steps:
   
     <img width="660" alt="image" src="https://user-images.githubusercontent.com/24421341/195047954-6ade693f-a911-4914-b50c-5121fd77dcae.png">
 
-2. Copy one of the sample workflows below and create a branch of your code to add the Contrast SCA action to your workflow. This branch is typically located at `./github/workflows/build.yml`
+2. Copy one of the sample workflows below and create a branch of your code to add the Contrast SCA action to your workflow. This branch is typically located at `.github/workflows/build.yml`
 3. Update the workflow file to specify when the action should run (for example on pull_request, on push)
    
     ```yaml
