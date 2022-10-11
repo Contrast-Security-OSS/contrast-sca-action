@@ -6,14 +6,14 @@ If you are not familiar with GitHub actions read the
 [GitHub Actions](https://docs.github.com/en/actions) documentation to learn what GitHub Actions are and how to set them
 up. After which, complete the following steps:
 
-1. Configure the following GitHub secrets CONTRAST_API_KEY, CONTRAST_ORGANIZATION_ID, CONTRAST_AUTH_HEADER and CONTRAST_API_URL (CONTRAST_API_URL not required for CodeSec users)
+1. Configure the following GitHub secrets CONTRAST_API_KEY, CONTRAST_ORGANIZATION_ID, CONTRAST_AUTH_HEADER and CONTRAST_API_URL 
 
 - **CodeSec by Contrast users:** Retrieve authentication details using the CLI.
   - Installation instructions here : [https://www.contrastsecurity.com/developer/codesec](https://www.contrastsecurity.com/developer/codesec)
   - If you are a new user, create an account with the 'contrast auth' command
   - The 'contrast config' command can then be used to collect the required credentials
   
-    <img width="594" alt="image" src="https://user-images.githubusercontent.com/24421341/195047470-de382b57-88b3-4fe8-b2ab-d36f81666452.png">
+    <img width="593" alt="image" src="https://user-images.githubusercontent.com/24421341/195069309-0cd48676-f7a8-465a-aa8c-f5fc117d7c88.png">
     
 - **Licensed Contrast users:** Get your credentials from the 'User Settings' menu in the Contrast web interface: You will need the following 
   - Organization ID
