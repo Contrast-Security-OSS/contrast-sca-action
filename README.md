@@ -96,7 +96,7 @@ jobs:
 name: SCA Node
 
 on:
-  pull_request:
+  push:
     branches:
       - "main"
 
