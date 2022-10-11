@@ -28,7 +28,7 @@ up. After which, complete the following steps:
    
     ```yaml
     on:
-      push:
+      pull_request:
         branches:
           - "main"
     ```
@@ -96,7 +96,7 @@ jobs:
 name: SCA Node
 
 on:
-  push:
+  pull_request:
     branches:
       - "main"
 
