@@ -36,8 +36,6 @@ up. After which, complete the following steps:
 
     ```yaml
               filePath: package.json
-              severity: medium
-              fail: true
     ```
 
 7. To fail based on severity of CVEs found set severity  (critical/high/medium or low) and fail to true
