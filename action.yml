@@ -1,4 +1,4 @@
-name: 'Contrast SCA Action'
+name: 'Contrast Security SCA'
 description: 'Contrast Source Composition Analysis'
 inputs:
   apiKey:
