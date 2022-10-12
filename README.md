@@ -1,5 +1,5 @@
-# Use Contrast SCA to find your vulnerable dependencies
-This GitHub action lets you use Contrast to detect vulnerable libraries in your code. The action looks at project configuration files included in your code, identifies vulnerable dependencies and provides guidance on the versions to update.
+# Use Contrast Security SCA to find your vulnerable dependencies
+This GitHub action lets you use Contrast Security to detect vulnerable dependencies in your code. The action looks at project configuration files, identifies vulnerable dependencies and provides guidance on the versions to update.
 
 ## Initial steps for using the action
 If you are not familiar with GitHub actions read the
@@ -8,22 +8,25 @@ up. After which, complete the following steps:
 
 1. Configure the following GitHub secrets CONTRAST_API_KEY, CONTRAST_ORGANIZATION_ID, CONTRAST_AUTH_HEADER and CONTRAST_API_URL 
 
-- **CodeSec by Contrast users:** Retrieve authentication details using the CLI.
+    <img width="700" alt="image" src="https://user-images.githubusercontent.com/24421341/195306020-a15e99f2-46bd-4d4f-bcd5-b33865040696.png">
+
+- **CodeSec by Contrast Security users:** Retrieve authentication details for the secrets using the CLI.
   - Installation instructions here : [https://www.contrastsecurity.com/developer/codesec](https://www.contrastsecurity.com/developer/codesec)
   - If you are a new user, create an account with the 'contrast auth' command
-  - The 'contrast config' command can then be used to collect the required credentials
+  - Run the 'contrast config' command in the CLI to collect the required credentials
   
-    <img width="593" alt="image" src="https://user-images.githubusercontent.com/24421341/195069309-0cd48676-f7a8-465a-aa8c-f5fc117d7c88.png">
+    <img width="592" alt="image" src="https://user-images.githubusercontent.com/24421341/195308711-4d818254-6f7d-43e3-ae08-2a4f72ec4162.png">
     
-- **Licensed Contrast users:** Get your credentials from the 'User Settings' menu in the Contrast web interface: You will need the following 
+- **Licensed Contrast Security users:** Get your authentication details for the secrets from the 'User Settings' menu in the Contrast web interface: You will need the following 
   - Organization ID
   - Your API key
   - Authorization header
-  - You will also need the URL of your Contrast UI host. This input includes the protocol section of the URL (https://). The default value is `https://ce.contrastsecurity.com` (Contrast Community Edition).
+  - You will also need the URL of your Contrast UI host. This input includes the protocol section of the URL (https://).
   
-    <img width="660" alt="image" src="https://user-images.githubusercontent.com/24421341/195047954-6ade693f-a911-4914-b50c-5121fd77dcae.png">
+    <img width="420" alt="image" src="https://user-images.githubusercontent.com/24421341/195308200-93f3c189-6f33-4e02-9e09-38c6abfeb120.png">
 
-2. Copy one of the sample workflows below and create a branch of your code to add Contrast SCA action. This branch is typically located at `.github/workflows/build.yml`
+2. Copy one of the sample workflows below and create a branch of your code to add Contrast Security SCA. This branch is typically located at `.github/workflows/build.yml`
+
 3. Update the workflow file to specify when the action should run (for example on pull_request, on push)
    
     ```yaml
@@ -45,7 +48,7 @@ up. After which, complete the following steps:
               fail: true
     ```
     
-6. After committing, create a Pull Request (PR) to merge the update back to your main branch. Creating the PR triggers the Contrast SCA action to run. The extra "Code Scanning" check appears in the PR.
+6. After committing, create a Pull Request (PR) to merge the update back to your main branch. Creating the PR triggers the Contrast Security SCA action to run. 
 
 
 ## Usage
@@ -165,12 +168,12 @@ jobs:
   - **Go:** go.mod
   - **PHP:** composer.json and composer.lock
 
-All Contrast-related account secrets should be configured as GitHub secrets and will be passed via environment variables in the GitHub runner.
+All Contrast Security related account secrets should be configured as GitHub secrets and will be passed via environment variables in the GitHub runner.
 
 ## Required inputs
-- apiKey - An API key from the Contrast platform.
-- authHeader - User authorization credentials from Contrast.
-- orgId - The ID of your organization in Contrast.
+- apiKey - An API key from the Contrast Security platform.
+- authHeader - User authorization credentials from Contrast Security.
+- orgId - The ID of your organization in Contrast Security.
 - filePath - Specify the path for project configuration file (e.g. lib/package.json) .
 - apiUrl - Required for Licensed Contrast Users only. This input includes the protocol section of the URL (https://). The default value is `https://ce.contrastsecurity.com` (Contrast Community Edition).
 ## Optional inputs
