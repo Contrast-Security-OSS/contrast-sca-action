@@ -64,7 +64,7 @@ on:
     branches:
       - "main"
 jobs:
-  Contrast Security SCA Audit:
+  Check-Dependency-Vulnerabilities:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -102,7 +102,7 @@ on:
       - "main"
 
 jobs:
-  perform-sca-node:
+  Check-Dependency-Vulnerabilities:
     runs-on: ubuntu-latest
     steps:
         # Checkout/build your application/install Node
@@ -132,7 +132,7 @@ on:
       - "main"
 
 jobs:
-  perform-sca-php:
+  Check-Dependency-Vulnerabilities:
     runs-on: ubuntu-latest
     steps:
         # Check out/build your application
