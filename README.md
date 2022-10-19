@@ -58,12 +58,13 @@ The following are sample workflows to get started in Java, Node, PHP.
 ### Java
 
 ```yaml
+name: Contrast Security SCA
 on:
   push:
     branches:
       - "main"
 jobs:
-  perform-sca-audit:
+  Check-Dependency-Vulnerabilities:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -78,7 +79,7 @@ jobs:
         run: |
           mvn clean install -DskipTests
 
-      - name: Contrast SCA Audit Action
+      - name: Contrast SCA Action
         uses: Contrast-Security-OSS/contrast-sca-action@v1
         with:
           apiKey: ${{ secrets.CONTRAST_API_KEY }}
@@ -93,7 +94,7 @@ jobs:
 ### Node
 
 ```yaml
-name: SCA Node
+name: Contrast Security SCA
 
 on:
   pull_request:
@@ -101,7 +102,7 @@ on:
       - "main"
 
 jobs:
-  perform-sca-node:
+  Check-Dependency-Vulnerabilities:
     runs-on: ubuntu-latest
     steps:
         # Checkout/build your application/install Node
@@ -123,7 +124,7 @@ jobs:
 ### PHP
 
 ```yaml
-name: SCA PHP
+name: Contrast Security SCA
 
 on:
   push:
@@ -131,7 +132,7 @@ on:
       - "main"
 
 jobs:
-  perform-sca-php:
+  Check-Dependency-Vulnerabilities:
     runs-on: ubuntu-latest
     steps:
         # Check out/build your application
