@@ -181,3 +181,4 @@ All Contrast Security related account secrets should be configured as GitHub sec
 - severity - Allows user to report libraries with vulnerabilities above a chosen severity level. Values for level are high, medium or low. (Note: Use this input in combination with the fail input, otherwise the action will exit)
 - fail - When set to true, fails the action if CVEs have been detected that match at least the severity option specified.
 - ignoreDev - When set to true, excludes developer dependencies from the results.
+- outputSummary - Defaults to true.  When set to true, writes the output of the audit to the GitHub Actions Summary.
