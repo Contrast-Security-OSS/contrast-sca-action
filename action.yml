@@ -26,6 +26,10 @@ inputs:
   ignoreDev:
     description: 'When set to true, excludes developer dependencies from the results.'
     required: false
+  outputSummary:
+    description: 'Defaults to true.  When set to true, writes the output of the audit to the GitHub Actions Summary.'
+    required: false
+    default: true
 runs:
   using: "composite"
   steps:
@@ -53,5 +57,11 @@ runs:
           echo "IGNORE_DEV=true" >> $GITHUB_ENV
         fi
     - id: perform-source-composition-analysis
-      run: SEVERITY=${{ inputs.severity }} && ./contrast audit --file ${{ inputs.filePath }} --api-key ${{ inputs.apiKey }} --authorization ${{ inputs.authHeader }} --organization-id ${{ inputs.orgId }} --host ${{ inputs.apiUrl }} ${IGNORE_DEV:+"--ignore-dev"} ${FAIL:+"--fail"} ${SEVERITY:+"--severity"} ${SEVERITY:+"$SEVERITY"} --save
+      run: |
+        if [ "${{inputs.output_summary}}" = true ]
+        then
+          SEVERITY=${{ inputs.severity }} && ./contrast audit --file ${{ inputs.filePath }} --api-key ${{ inputs.apiKey }} --authorization ${{ inputs.authHeader }} --organization-id ${{ inputs.orgId }} --host ${{ inputs.apiUrl }} ${IGNORE_DEV:+"--ignore-dev"} ${FAIL:+"--fail"} ${SEVERITY:+"--severity"} ${SEVERITY:+"$SEVERITY"} --save >> $GITHUB_STEP_SUMMARY
+        else
+          SEVERITY=${{ inputs.severity }} && ./contrast audit --file ${{ inputs.filePath }} --api-key ${{ inputs.apiKey }} --authorization ${{ inputs.authHeader }} --organization-id ${{ inputs.orgId }} --host ${{ inputs.apiUrl }} ${IGNORE_DEV:+"--ignore-dev"} ${FAIL:+"--fail"} ${SEVERITY:+"--severity"} ${SEVERITY:+"$SEVERITY"} --save
+        fi
       shell: bash
