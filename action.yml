@@ -58,7 +58,7 @@ runs:
         fi
     - id: perform-source-composition-analysis
       run: |
-        if [ "${{inputs.output_summary}}" = true ]
+        if [ "${{inputs.outputSummary}}" = true ]
         then
           SEVERITY=${{ inputs.severity }} && ./contrast audit --file ${{ inputs.filePath }} --api-key ${{ inputs.apiKey }} --authorization ${{ inputs.authHeader }} --organization-id ${{ inputs.orgId }} --host ${{ inputs.apiUrl }} ${IGNORE_DEV:+"--ignore-dev"} ${FAIL:+"--fail"} ${SEVERITY:+"--severity"} ${SEVERITY:+"$SEVERITY"} --save >> $GITHUB_STEP_SUMMARY
         else
