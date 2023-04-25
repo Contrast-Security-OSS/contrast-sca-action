@@ -63,9 +63,8 @@ runs:
   steps:
     - name: Get Latest CLI
       run: |
-        echo "Downloading Contrast CLI v2.0.1..."
-        curl --location "https://contrastsecurity.jfrog.io/artifactory/oss-binaries/main/linux/contrast-linux" \
-        -H "X-JFrog-Art-API: ${{ inputs.artApiKey }}" --output contrast
+        echo "Downloading Contrast CLI v2.0.2-beta.0"
+        curl --location 'https://pkg.contrastsecurity.com/artifactory/cli/v2/2.0.2-beta.0/linux/contrast' --output contrast
       shell: bash
     - run: chmod +x contrast
       shell: bash
