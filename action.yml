@@ -49,9 +49,6 @@ inputs:
   externalId:
     description: 'When set, will pass the optional external id parameter to the contrast cli'
     required: false
-  artApiKey:
-    description: 'Artifactory API-Key'
-    required: true
 
   command:
     description: 'Command to run cli with audit/fingerprint'
