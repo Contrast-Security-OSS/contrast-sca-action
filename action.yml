@@ -159,6 +159,12 @@ runs:
         echo "Running the Contrast Audit Command..."
         ./contrast audit ${{ steps.required-args.outputs.args }} ${{ steps.optional-args.outputs.args }} --track --verbose --debug --save >> output.txt
         eval cat ./output.txt ${OUTPUT_SUMMARY:+" >> $GITHUB_STEP_SUMMARY "}
+
+    - name: Get SBOM filename
+      if: ${{ inputs.command == 'audit' }}
+      id: get-sbom-filename
+      shell: bash
+      run: |      
         filename=$(cat ./output.txt | grep -o -E '[0-9a-fA-F]{8}(-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}-sbom-.*\.json')
         echo "sbom_filename=$filename" >> "$GITHUB_OUTPUT"
 
@@ -167,4 +173,4 @@ runs:
       uses: actions/upload-artifact@v3
       with:
         name: sbom.json
-        path: ${{ steps.run-audit.outputs.sbom_filename }} 
+        path: ${{ steps.rget-sbom-filename.outputs.sbom_filename }} 
