@@ -157,8 +157,8 @@ runs:
       shell: bash
       run: |
         echo "Running the Contrast Audit Command..."
-        eval ./contrast audit ${{ steps.required-args.outputs.args }} ${{ steps.optional-args.outputs.args }} --track --verbose --debug --save >> output.txt
-        cat output.txt ${OUTPUT_SUMMARY:+" >> $GITHUB_STEP_SUMMARY "}
+        ./contrast audit ${{ steps.required-args.outputs.args }} ${{ steps.optional-args.outputs.args }} --track --verbose --debug --save >> output.txt
+        cat ./output.txt ${OUTPUT_SUMMARY:+" >> $GITHUB_STEP_SUMMARY "}
         filename=$(cat output.txt| grep -o -E '[0-9a-fA-F]{8}(-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}-sbom-*.\.json' | sed 's/.*\///')
         echo sbom_filename=$filename >> $GITHUB_OUTPUT
 
