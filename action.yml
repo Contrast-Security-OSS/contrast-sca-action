@@ -1,5 +1,9 @@
-name: 'Contrast Security SCA'
-description: 'Contrast Source Composition Analysis'
+name: 'Contrast Fingerprint CLI Action'
+description: 'Generate fingerprint info from the code provided.'
+outputs:
+  fingerprint:
+    description: "Output from the fingerprint command"
+    value: ${{ steps.run-fingerprint.outputs.fingerprint }}
 inputs:
   apiKey:
     description: 'An agent API key provided by Contrast (required).'
@@ -13,6 +17,12 @@ inputs:
   filePath:
     description: 'Specify the directory in which to search for project configuration files (required).'
     required: true
+  repositoryId:
+    description: 'The ID of your repo.'
+    required: false
+  projectGroupId:
+    description: 'The ID of your project Groups.'
+    required: false
   apiUrl:
     description: 'The name of the host. Includes the protocol section of the URL (https://). Defaults to https://ce.contrastsecurity.com. (optional)'
     required: false
@@ -20,6 +30,7 @@ inputs:
   severity:
     description: 'Allows user to report libraries with vulnerabilities above a chosen severity level. Values for level are high, medium or low. (Note: Use this input in combination with the fail input, otherwise the action will exit)'
     required: false
+    default: "CRITICAL"
   fail:
     description: 'When set to true, fails the action if CVEs have been detected that match at least the severity option specified.'
     required: false
@@ -30,38 +41,119 @@ inputs:
     description: 'Defaults to true.  When set to true, writes the output of the audit to the GitHub Actions Summary.'
     required: false
     default: true
+  repoUrl:
+    description: 'When set, will pass the optional repo url parameter to the contrast cli'
+    required: false
+  repoName:
+    description: 'When set, will pass the optional repo name parameter to the contrast cli'
+    required: false
+  externalId:
+    description: 'When set, will pass the optional external id parameter to the contrast cli'
+    required: false
+  auditTimeout:
+    description: 'Sets the timeout for an audit in seconds, Default: 600 (10 minutes)'
+    required: false
+    default: '600'
+
+  command:
+    description: 'Command to run cli with audit/fingerprint'
+    required: false
+    default: audit
+
 runs:
   using: "composite"
   steps:
-    - run: curl --location -O https://pkg.contrastsecurity.com/artifactory/cli/1.0.23/linux/contrast
+    - name: Get Latest CLI
+      run: |
+        echo "Downloading Contrast CLI v2.0.2-beta.1"
+        curl --location 'https://pkg.contrastsecurity.com/artifactory/cli/v2/2.0.2-beta.1/linux/contrast' --output contrast
       shell: bash
     - run: chmod +x contrast
       shell: bash
-    - name: Validate inputs
+
+    - name: Get CLI Required Arguments
+      id: required-args
       shell: bash
       run: |
-        if [ -n "${{inputs.severity}}" ]
-        then
-          if [ -z "${{inputs.fail}}" ] || [ "${{inputs.fail}}" != true ]
-          then
-            echo "ERROR: Severity has been set without fail flag. Please set fail to true in order to fail the action if vulnerabilities are found."
-            exit 1
-          fi
-        fi
-        if [ "${{inputs.fail}}" = true ]
-        then
-          echo "FAIL=true" >> $GITHUB_ENV
-        fi
-        if [ "${{inputs.ignoreDev}}" = true ]
-        then
-          echo "IGNORE_DEV=true" >> $GITHUB_ENV
-        fi
-    - id: perform-source-composition-analysis
+        echo "Setting Required Args..."
+        args=()
+        args+=("--api-key ${{ inputs.apiKey }}")
+        args+=("--authorization ${{ inputs.authHeader }}")
+        args+=("--organization-id ${{ inputs.orgId }}")
+        args+=("--host ${{ inputs.apiUrl }}")
+
+        echo "args=${args[@]}" >> $GITHUB_OUTPUT
+
+    - name: Get CLI Optional Arguments
+      id: optional-args
+      shell: bash
       run: |
-        if [ "${{inputs.outputSummary}}" = true ]
-        then
-          SEVERITY=${{ inputs.severity }} && ./contrast audit --file ${{ inputs.filePath }} --api-key ${{ inputs.apiKey }} --authorization ${{ inputs.authHeader }} --organization-id ${{ inputs.orgId }} --host ${{ inputs.apiUrl }} ${IGNORE_DEV:+"--ignore-dev"} ${FAIL:+"--fail"} ${SEVERITY:+"--severity"} ${SEVERITY:+"$SEVERITY"} --save >> $GITHUB_STEP_SUMMARY
+        echo "Setting Optional Args..."
+        args=()      
+        if [ -n "${{ inputs.repositoryId }}" ]; then
+          args+=("--repository-id")
+          args+=("${{ inputs.repositoryId }}")
+        fi
+        if [ -n "${{ inputs.repoUrl }}" ]; then
+          args+=("--repository-url")
+          args+=("${{ inputs.repoUrl }}")
+        fi
+        if [ -n "${{ inputs.repoName }}" ]; then
+          args+=("--repository-name")
+          args+=("${{ inputs.repoName }}")
+        fi
+        if [ -n "${{ inputs.externalId }}" ]; then
+          args+=("--external-id")
+          args+=("${{ inputs.externalId }}")
+        fi
+        if [ -n "${{inputs.filePath}}" ]; then
+          args+=("--file")
+          args+=("${{ inputs.filePath }}")
+        fi
+        if [ ${{ inputs.command == 'audit' }} ]; then
+          args+=("--severity")
+          args+=("${{ inputs.severity }}")
+          args+=("--timeout")
+          args+=("${{ inputs.auditTimeout}}")
+        fi
+        if [ -n "${{inputs.projectGroupId}}" ]; then
+          args+=("--project-group-id")
+          args+=("${{ inputs.projectGroupId }}")
+        fi
+        if [ "${{inputs.fail}}" = true ]; then
+          args+=("--fail")
+        fi
+        if [ "${{inputs.ignoreDev}}" = true ]; then
+          args+=("--ignore-dev")
+        fi
+        if [ "${{inputs.outputSummary}}" = true ]; then          
+          echo "OUTPUT_SUMMARY=true" >> $GITHUB_ENV
         else
-          SEVERITY=${{ inputs.severity }} && ./contrast audit --file ${{ inputs.filePath }} --api-key ${{ inputs.apiKey }} --authorization ${{ inputs.authHeader }} --organization-id ${{ inputs.orgId }} --host ${{ inputs.apiUrl }} ${IGNORE_DEV:+"--ignore-dev"} ${FAIL:+"--fail"} ${SEVERITY:+"--severity"} ${SEVERITY:+"$SEVERITY"} --save
+          echo "OUTPUT_SUMMARY=false" >> $GITHUB_ENV
         fi
+
+        echo "args=${args[@]}" >> $GITHUB_OUTPUT
+
+    - name: Run Contrast Fingerprint CLI Command
+      if: ${{ inputs.command == 'fingerprint' }}
+      id: run-fingerprint
       shell: bash
+      run: |
+        echo "Running the Contrast Fingerprint Command..."
+        ./contrast fingerprint ${{ steps.required-args.outputs.args }} ${{ steps.optional-args.outputs.args }} --verbose --debug
+        ls
+        echo fingerprint=$(cat fingerPrintInfo.json) >> $GITHUB_OUTPUT
+
+    - name: Upload output file
+      uses: actions/upload-artifact@v3
+      with:
+        name: fingerPrintInfo.json
+        path: fingerPrintInfo.json
+
+    - name: Run Contrast Audit CLI Command
+      if: ${{ inputs.command == 'audit' }}
+      id: run-audit
+      shell: bash
+      run: |
+        echo "Running the Contrast Audit Command..."
+        eval ./contrast audit ${{ steps.required-args.outputs.args }} ${{ steps.optional-args.outputs.args }} --track --verbose --debug --timeout ${{ inputs.auditTimeout}}  --save ${OUTPUT_SUMMARY:+" >> $GITHUB_STEP_SUMMARY "}
