@@ -30,6 +30,7 @@ inputs:
   severity:
     description: 'Allows user to report libraries with vulnerabilities above a chosen severity level. Values for level are high, medium or low. (Note: Use this input in combination with the fail input, otherwise the action will exit)'
     required: false
+    default: "CRITICAL"
   fail:
     description: 'When set to true, fails the action if CVEs have been detected that match at least the severity option specified.'
     required: false
@@ -49,6 +50,10 @@ inputs:
   externalId:
     description: 'When set, will pass the optional external id parameter to the contrast cli'
     required: false
+  auditTimeout:
+    description: 'Sets the timeout for an audit in seconds, Default: 600 (10 minutes)'
+    required: false
+    default: '600'
 
   command:
     description: 'Command to run cli with audit/fingerprint'
@@ -105,9 +110,11 @@ runs:
           args+=("--file")
           args+=("${{ inputs.filePath }}")
         fi
-        if [ -n "${{inputs.severity}}" ]; then
+        if [ ${{ inputs.command == 'audit' }} ]; then
           args+=("--severity")
           args+=("${{ inputs.severity }}")
+          args+=("--timeout")
+          args+=("${{ inputs.auditTimeout}}")
         fi
         if [ -n "${{inputs.projectGroupId}}" ]; then
           args+=("--project-group-id")
