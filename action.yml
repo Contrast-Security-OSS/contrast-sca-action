@@ -65,8 +65,8 @@ runs:
   steps:
     - name: Get Latest CLI
       run: |
-        echo "Downloading Contrast CLI v2.0.2-beta.1"
-        curl --location 'https://pkg.contrastsecurity.com/artifactory/cli/v2/2.0.2-beta.1/linux/contrast' --output contrast
+        echo "Downloading Contrast CLI 2.0.2-beta.3"
+        curl --location 'https://pkg.contrastsecurity.com/artifactory/cli/v2/2.0.2-beta.3/linux/contrast' --output contrast
       shell: bash
     - run: chmod +x contrast
       shell: bash
@@ -156,4 +156,4 @@ runs:
       shell: bash
       run: |
         echo "Running the Contrast Audit Command..."
-        eval ./contrast audit ${{ steps.required-args.outputs.args }} ${{ steps.optional-args.outputs.args }} --track --verbose --debug  --save ${OUTPUT_SUMMARY:+" >> $GITHUB_STEP_SUMMARY "}
+        eval ./contrast audit ${{ steps.required-args.outputs.args }} ${{ steps.optional-args.outputs.args }} --track --verbose --debug --save ${OUTPUT_SUMMARY:+" >> $GITHUB_STEP_SUMMARY "}
