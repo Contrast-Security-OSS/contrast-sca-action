@@ -40,7 +40,7 @@ inputs:
   outputSummary:
     description: 'Defaults to true.  When set to true, writes the output of the audit to the GitHub Actions Summary.'
     required: false
-    default: true
+    default: 'true'
   repoUrl:
     description: 'When set, will pass the optional repo url parameter to the contrast cli'
     required: false
@@ -161,12 +161,9 @@ runs:
         filename=$(echo "$GITHUB_STEP_SUMMARY" | grep -o -E '[0-9a-fA-F]{8}(-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}-sbom-*.\.json' | sed 's/.*\///')
         echo sbom_filename=$filename >> $GITHUB_OUTPUT
 
-    - name: Upload output file
+    - name: Upload sbom file
       if: ${{ inputs.command == 'audit' }}
       uses: actions/upload-artifact@v3
       with:
         name: sbom.json
         path: ${{ steps.run-audit.outputs.sbom_filename }} 
-
-
-`${fileStart}-sbom-${type}.json`
