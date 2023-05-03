@@ -156,4 +156,4 @@ runs:
       shell: bash
       run: |
         echo "Running the Contrast Audit Command..."
-        eval ./contrast audit ${{ steps.required-args.outputs.args }} ${{ steps.optional-args.outputs.args }} --track --verbose --debug --timeout ${{ inputs.auditTimeout}}  --save ${OUTPUT_SUMMARY:+" >> $GITHUB_STEP_SUMMARY "}
+        eval ./contrast audit ${{ steps.required-args.outputs.args }} ${{ steps.optional-args.outputs.args }} --track --verbose --debug  --save ${OUTPUT_SUMMARY:+" >> $GITHUB_STEP_SUMMARY "}
