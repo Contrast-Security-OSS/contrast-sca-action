@@ -173,4 +173,4 @@ runs:
       uses: actions/upload-artifact@v3
       with:
         name: sbom.json
-        path: ${{ steps.rget-sbom-filename.outputs.sbom_filename }} 
+        path: ${{ steps.get-sbom-filename.outputs.sbom_filename }} 
