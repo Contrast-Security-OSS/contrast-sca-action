@@ -145,6 +145,7 @@ runs:
         echo fingerprint=$(cat fingerPrintInfo.json) >> $GITHUB_OUTPUT
 
     - name: Upload output file
+      if: ${{ inputs.command != 'audit' }}
       uses: actions/upload-artifact@v3
       with:
         name: fingerPrintInfo.json
@@ -157,3 +158,15 @@ runs:
       run: |
         echo "Running the Contrast Audit Command..."
         eval ./contrast audit ${{ steps.required-args.outputs.args }} ${{ steps.optional-args.outputs.args }} --track --verbose --debug --save ${OUTPUT_SUMMARY:+" >> $GITHUB_STEP_SUMMARY "}
+        filename=$(echo "$GITHUB_STEP_SUMMARY" | grep -o -E '[0-9a-fA-F]{8}(-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}-sbom-*.\.json' | sed 's/.*\///')
+        echo sbom_filename=$filename >> $GITHUB_OUTPUT
+
+    - name: Upload output file
+      if: ${{ inputs.command == 'audit' }}
+      uses: actions/upload-artifact@v3
+      with:
+        name: sbom.json
+        path: ${{ steps.run-audit.outputs.sbom_filename }} 
+
+
+`${fileStart}-sbom-${type}.json`
