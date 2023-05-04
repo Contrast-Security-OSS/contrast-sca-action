@@ -40,7 +40,7 @@ inputs:
   outputSummary:
     description: 'Defaults to true.  When set to true, writes the output of the audit to the GitHub Actions Summary.'
     required: false
-    default: true
+    default: 'true'
   repoUrl:
     description: 'When set, will pass the optional repo url parameter to the contrast cli'
     required: false
@@ -145,6 +145,7 @@ runs:
         echo fingerprint=$(cat fingerPrintInfo.json) >> $GITHUB_OUTPUT
 
     - name: Upload output file
+      if: ${{ inputs.command != 'audit' }}
       uses: actions/upload-artifact@v3
       with:
         name: fingerPrintInfo.json
@@ -156,4 +157,20 @@ runs:
       shell: bash
       run: |
         echo "Running the Contrast Audit Command..."
-        eval ./contrast audit ${{ steps.required-args.outputs.args }} ${{ steps.optional-args.outputs.args }} --track --verbose --debug --save ${OUTPUT_SUMMARY:+" >> $GITHUB_STEP_SUMMARY "}
+        ./contrast audit ${{ steps.required-args.outputs.args }} ${{ steps.optional-args.outputs.args }} --track --verbose --debug --save >> output.txt
+        eval cat ./output.txt ${OUTPUT_SUMMARY:+" >> $GITHUB_STEP_SUMMARY "}
+
+    - name: Get SBOM filename
+      if: ${{ inputs.command == 'audit' }}
+      id: get-sbom-filename
+      shell: bash
+      run: |      
+        filename=$(cat ./output.txt | grep -o -E '[0-9a-fA-F]{8}(-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}-sbom-.*\.json')
+        echo "sbom_filename=$filename" >> "$GITHUB_OUTPUT"
+
+    - name: Upload sbom file
+      if: ${{ inputs.command == 'audit' }}
+      uses: actions/upload-artifact@v3
+      with:
+        name: sbom.json
+        path: ${{ steps.get-sbom-filename.outputs.sbom_filename }} 
