@@ -181,3 +181,19 @@ runs:
       with:
         name: sbom.json
         path: ${{ steps.get-sbom-filename.outputs.sbom_filename }}
+        
+    - name: Get Log output name
+      if: ${{ inputs.command == 'audit' }}
+      id: get-log-out-name
+      shell: bash 
+      run: |
+        dir=${{ github.workspace }}
+        filename=$(echo '${{ inputs.filepath }}' | sed "s|$dir/||; s|/|-|g")
+        echo "log_out_name=$filename" >> "$GITHUB_OUTPUT"
+        
+    - name: Upload log file
+      if: ${{ inputs.command == 'audit' }}
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ steps.get-log-out-name.outputs.log_out_name }}.contrast.log
+        path: contrast.log
