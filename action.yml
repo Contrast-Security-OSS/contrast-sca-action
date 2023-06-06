@@ -151,6 +151,13 @@ runs:
         name: fingerPrintInfo.json
         path: fingerPrintInfo.json
 
+    - name: Upload log file
+      if: ${{ inputs.command != 'audit' }}
+      uses: actions/upload-artifact@v3
+      with:
+        name: fingerPrint.log
+        path: contrast.log
+
     - name: Run Contrast Audit CLI Command
       if: ${{ inputs.command == 'audit' }}
       id: run-audit
@@ -173,4 +180,20 @@ runs:
       uses: actions/upload-artifact@v3
       with:
         name: sbom.json
-        path: ${{ steps.get-sbom-filename.outputs.sbom_filename }} 
+        path: ${{ steps.get-sbom-filename.outputs.sbom_filename }}
+        
+    - name: Get Log output name
+      if: ${{ inputs.command == 'audit' }}
+      id: get-log-out-name
+      shell: bash 
+      run: |
+        dir=${{ github.workspace }}
+        filename=$(echo '${{ inputs.filepath }}' | sed "s|$dir/||; s|/|-|g")
+        echo "log_out_name=$filename" >> "$GITHUB_OUTPUT"
+        
+    - name: Upload log file
+      if: ${{ inputs.command == 'audit' }}
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ steps.get-log-out-name.outputs.log_out_name }}.contrast.log
+        path: contrast.log
