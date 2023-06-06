@@ -1,6 +1,8 @@
 name: Contrast Audit Action Regression
 on:
   pull_request:
+    branches:
+      - releases/v1
 jobs:
   trigger_tests:
     runs-on: ubuntu-latest
