@@ -155,7 +155,7 @@ runs:
       if: ${{ inputs.command != 'audit' }}
       uses: actions/upload-artifact@v3
       with:
-        name: fingerPrint-log.json
+        name: fingerPrint.log
         path: contrast.log
 
     - name: Run Contrast Audit CLI Command
