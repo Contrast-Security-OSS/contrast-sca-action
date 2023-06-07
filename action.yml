@@ -168,14 +168,14 @@ runs:
         ./contrast audit ${{ steps.required-args.outputs.args }} ${{ steps.optional-args.outputs.args }} --track --log --save >> output.txt
         eval cat ./output.txt ${OUTPUT_SUMMARY:+" >> $GITHUB_STEP_SUMMARY "}
    
-   - name: Get Log output name
-     if: ${{ inputs.command == 'audit' }}
-     id: get-log-out-name
-     shell: bash 
-     run: |
-       dir=${{ github.workspace }}
-       filename=$(echo '${{ inputs.filepath }}' | sed "s|$dir/||; s|/|-|g")
-       echo "log_out_name=$filename" >> "$GITHUB_OUTPUT"
+    - name: Get Log output name
+      if: ${{ inputs.command == 'audit' }}
+      id: get-log-out-name
+      shell: bash 
+      run: |
+        dir=${{ github.workspace }}
+        filename=$(echo '${{ inputs.filepath }}' | sed "s|$dir/||; s|/|-|g")
+        echo "log_out_name=$filename" >> "$GITHUB_OUTPUT"
         
     - name: Upload log file
       if: ${{ inputs.command == 'audit' }}
