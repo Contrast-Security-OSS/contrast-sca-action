@@ -206,3 +206,9 @@ runs:
         path: ${{ steps.get-sbom-filename.outputs.sbom_filename }}
         
 
+    - name: Check Audit outcome
+      run: |
+        if [[ "${{ steps.run-audit.outcome }}" != "success" ]]; then
+          echo "Audit failed check logs in ${{ steps.get-log-out-name.outputs.log_out_name }}.contrast.log for more info"
+          exit 1
+        fi
