@@ -160,6 +160,7 @@ runs:
 
     - name: Run Contrast Audit CLI Command
       if: ${{ inputs.command == 'audit' }}
+      continue-on-error: true
       id: run-audit
       shell: bash
       run: |
