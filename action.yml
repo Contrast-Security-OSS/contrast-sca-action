@@ -185,6 +185,7 @@ runs:
     - name: Upload log file
       if: ${{ inputs.command == 'audit' }}
       uses: actions/upload-artifact@v3
+      shell: bash
       with:
         name: ${{ steps.get-log-out-name.outputs.log_out_name }}.contrast.log
         path: contrast.log
