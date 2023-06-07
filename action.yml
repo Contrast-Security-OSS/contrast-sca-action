@@ -207,6 +207,7 @@ runs:
         
 
     - name: Check Audit outcome
+      shell: bash
       run: |
         if [[ "${{ steps.run-audit.outcome }}" != "success" ]]; then
           echo "Audit failed check logs in ${{ steps.get-log-out-name.outputs.log_out_name }}.contrast.log for more info"
