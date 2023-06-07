@@ -170,6 +170,7 @@ runs:
      
     - name: Send Output to Step Summary
       if: ${{ inputs.command == 'audit' }}
+      shell: bash
       run: |
         eval cat ./output.txt ${OUTPUT_SUMMARY:+" >> $GITHUB_STEP_SUMMARY "}
    
@@ -185,7 +186,6 @@ runs:
     - name: Upload log file
       if: ${{ inputs.command == 'audit' }}
       uses: actions/upload-artifact@v3
-      shell: bash
       with:
         name: ${{ steps.get-log-out-name.outputs.log_out_name }}.contrast.log
         path: contrast.log
