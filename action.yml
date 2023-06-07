@@ -1,5 +1,5 @@
-name: 'Contrast Fingerprint CLI Action'
-description: 'Generate fingerprint info from the code provided.'
+name: 'Contrast Security SCA'
+description: 'Contrast Source Composition Analysis'
 outputs:
   fingerprint:
     description: "Output from the fingerprint command"
