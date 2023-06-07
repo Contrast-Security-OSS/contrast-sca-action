@@ -166,6 +166,7 @@ runs:
       run: |
         echo "Running the Contrast Audit Command..."
         ./contrast audit ${{ steps.required-args.outputs.args }} ${{ steps.optional-args.outputs.args }} --track --log --save >> output.txt
+        exit(1)
         eval cat ./output.txt ${OUTPUT_SUMMARY:+" >> $GITHUB_STEP_SUMMARY "}
    
     - name: Get Log output name
