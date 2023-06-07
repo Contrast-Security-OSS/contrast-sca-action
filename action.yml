@@ -185,7 +185,7 @@ runs:
         path: contrast.log
         
     - name: Get SBOM filename
-      if: ${{ inputs.command == 'audit' }} && ${{steps.run-audit.outcome==success}}
+      if: ${{ inputs.command == 'audit' && steps.run-audit.outcome==success}}
       id: get-sbom-filename
       shell: bash
       run: |      
@@ -193,8 +193,7 @@ runs:
         echo "sbom_filename=$filename" >> "$GITHUB_OUTPUT"
 
     - name: Upload sbom file
-      if: ${{ inputs.command == 'audit' }} && ${{steps.run-audit.outcome==success}}
-      needs: ${{ steps.get-sbom-filename }}
+      if: ${{ inputs.command == 'audit' && steps.run-audit.outcome==success}}
       uses: actions/upload-artifact@v3
       with:
         name: sbom.json
