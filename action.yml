@@ -206,6 +206,7 @@ runs:
         
 
     - name: Check Audit outcome
+      if: ${{ inputs.command == 'audit' }}
       shell: bash
       run: |
         if [[ "${{ steps.run-audit.outcome }}" != "success" ]]; then
