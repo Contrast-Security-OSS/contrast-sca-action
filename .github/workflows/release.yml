@@ -1,0 +1,35 @@
+name: create-release
+
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - 'main'
+    types:
+      - closed
+
+
+permissions:
+  contents: write
+jobs:
+  tagged-release:
+    name: "Tagged Release"
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: actions/checkout@v2.3.3
+        with:
+          fetch-depth: 0
+      
+      - name: Git Version
+        id: version
+        uses: codacy/git-version@80c816f11db8dea5e3a81025f598193015b51832
+        with:
+          release-branch: main
+          prefix: v
+
+      - name: Create Release
+        uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844
+        with:
+          tag_name: ${{ steps.version.outputs.version }}
+          token: ${{secrets.SCA_PAT}} # Can add this once service desk creat it so auto tagger gets triggered
