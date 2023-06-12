@@ -32,4 +32,5 @@ jobs:
         uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844
         with:
           tag_name: ${{ steps.version.outputs.version }}
-          token: ${{secrets.SCA_PAT}} # Can add this once service desk creat it so auto tagger gets triggered
+          token: ${{secrets.SCA_OSS_PAT}} # Used so pipeline gets triggered from this one 
+          # See https://docs.github.com/en/actions/using-workflows/triggering-a-workflow#triggering-a-workflow-from-a-workflow
