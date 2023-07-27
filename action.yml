@@ -65,8 +65,8 @@ runs:
   steps:
     - name: Get Latest CLI
       run: |
-        echo "Downloading Contrast CLI 2.0.3"
-        curl --location 'https://pkg.contrastsecurity.com/artifactory/cli/v2/2.0.3/linux/contrast' --output contrast
+        echo "Downloading Contrast CLI 2.1.0"
+        curl --location 'https://pkg.contrastsecurity.com/artifactory/cli/v2/2.1.0/linux/contrast' --output contrast
       shell: bash
     - run: chmod +x contrast
       shell: bash
@@ -166,29 +166,29 @@ runs:
       run: |
         echo "Running the Contrast Audit Command..."
         ./contrast audit ${{ steps.required-args.outputs.args }} ${{ steps.optional-args.outputs.args }} --track --log --save >> output.txt
-     
+
     - name: Send Output to Step Summary
       if: ${{ inputs.command == 'audit' }}
       shell: bash
       run: |
         eval cat ./output.txt ${OUTPUT_SUMMARY:+" >> $GITHUB_STEP_SUMMARY "}
-   
+
     - name: Get Log output name
       if: ${{ inputs.command == 'audit' }}
       id: get-log-out-name
-      shell: bash 
+      shell: bash
       run: |
         dir=${{ github.workspace }}
         filename=$(echo '${{ inputs.filepath }}' | sed "s|$dir/||; s|/|-|g")
         echo "log_out_name=$filename" >> "$GITHUB_OUTPUT"
-        
+
     - name: Upload log file
       if: ${{ inputs.command == 'audit' }}
       uses: actions/upload-artifact@v3
       with:
         name: ${{ steps.get-log-out-name.outputs.log_out_name }}.contrast.log
         path: contrast.log
-        
+
     - name: Get SBOM filename
       if: ${{ inputs.command == 'audit' && steps.run-audit.outcome=='success'}}
       id: get-sbom-filename
@@ -203,7 +203,7 @@ runs:
       with:
         name: sbom.json
         path: ${{ steps.get-sbom-filename.outputs.sbom_filename }}
-        
+
 
     - name: Check Audit outcome
       if: ${{ inputs.command == 'audit' }}
