@@ -1,6 +1,5 @@
 name: Contrast Audit V2 Action Regression
 on:
-  push:
   pull_request:
     branches:
       - 'main/**'
