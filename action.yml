@@ -159,14 +159,14 @@ runs:
         echo fingerprint=$(cat fingerPrintInfo.json) >> $GITHUB_OUTPUT
 
     - name: Upload output file
-      if: ${{ inputs.command != 'audit' }}
+      if: ${{ inputs.command == 'fingerprint' }}
       uses: actions/upload-artifact@v3
       with:
         name: fingerPrintInfo.json
         path: fingerPrintInfo.json
 
     - name: Upload log file
-      if: ${{ inputs.command != 'audit' }}
+      if: ${{ inputs.command == 'fingerprint' }}
       uses: actions/upload-artifact@v3
       with:
         name: fingerPrint.log
@@ -188,11 +188,12 @@ runs:
       shell: bash
       run: |
         echo "Running the Contrast Sarif Command..."
-        ./contrast sarif ${{ steps.required-args.outputs.args }} ${{ steps.optional-args.outputs.args }} >> output.txt
+        ./contrast sarif ${{ steps.required-args.outputs.args }} ${{ steps.optional-args.outputs.args }} 
+        echo sarif=$(cat contrast.sarif) >> $GITHUB_OUTPUT
 
     - name: Upload SARIF file
       if: ${{ inputs.command == 'sarif' }}
-      uses: github/codeql-action/upload-sarif@v2
+      uses: github/codeql-action/upload-sarif@v3
       with:
         sarif_file: contrast.sarif
 
