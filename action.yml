@@ -23,6 +23,9 @@ inputs:
   projectGroupId:
     description: 'The ID of your project Groups.'
     required: false
+  applicationId:
+    description: 'The ID of your application.'
+    required: false
   apiUrl:
     description: 'The name of the host. Includes the protocol section of the URL (https://). Defaults to https://ce.contrastsecurity.com. (optional)'
     required: false
@@ -54,9 +57,12 @@ inputs:
     description: 'Sets the timeout for an audit in seconds, Default: 600 (10 minutes)'
     required: false
     default: '600'
+  metadata:
+    description: 'Metadata filter to be passed to the Contrast CLI when running sarif command'
+    required: false
 
   command:
-    description: 'Command to run cli with audit/fingerprint'
+    description: 'Command to run cli with audit/fingerprint/sarif'
     required: false
     default: audit
 
@@ -65,8 +71,8 @@ runs:
   steps:
     - name: Get Latest CLI
       run: |
-        echo "Downloading Contrast CLI 2.1.5"
-        curl --location 'https://pkg.contrastsecurity.com/artifactory/cli/v2/2.1.6/linux/contrast' --output contrast
+        echo "Downloading Contrast CLI 2.1.8-beta"
+        curl --location 'https://pkg.contrastsecurity.com/artifactory/cli/v2/2.1.8-beta/linux/contrast' --output contrast
       shell: bash
     - run: chmod +x contrast
       shell: bash
@@ -115,6 +121,14 @@ runs:
           args+=("${{ inputs.severity }}")
           args+=("--timeout")
           args+=("${{ inputs.auditTimeout}}")
+        fi
+        if [ -n "${{inputs.metadata}}" ]; then
+          args+=("--metadata")
+          args+=("${{ inputs.metadata }}")
+        fi
+        if [ -n "${{inputs.applicationId}}" ]; then
+          args+=("--application-id")
+          args+=("${{ inputs.applicationId }}")
         fi
         if [ -n "${{inputs.projectGroupId}}" ]; then
           args+=("--project-group-id")
@@ -166,6 +180,27 @@ runs:
       run: |
         echo "Running the Contrast Audit Command..."
         ./contrast audit ${{ steps.required-args.outputs.args }} ${{ steps.optional-args.outputs.args }} --track --log --save >> output.txt
+
+    - name: Run Contrast Sarif CLI Command
+      if: ${{ inputs.command == 'sarif' }}
+      continue-on-error: true
+      id: run-sarif
+      shell: bash
+      run: |
+        echo "Running the Contrast Sarif Command..."
+        ./contrast sarif ${{ steps.required-args.outputs.args }} ${{ steps.optional-args.outputs.args }} >> output.txt
+
+    - name: Upload SARIF file
+      uses: github/codeql-action/upload-sarif@v2
+      with:
+        sarif_file: contrast.sarif
+
+    - name: Upload sarif file to summary
+      if: ${{ inputs.command == 'sarif' }}
+      uses: actions/upload-artifact@v3
+      with:
+        name: contrast.sarif
+        path: contrast.sarif
 
     - name: Send Output to Step Summary
       if: ${{ inputs.command == 'audit' }}
