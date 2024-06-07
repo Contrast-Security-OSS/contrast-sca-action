@@ -191,6 +191,7 @@ runs:
         ./contrast sarif ${{ steps.required-args.outputs.args }} ${{ steps.optional-args.outputs.args }} >> output.txt
 
     - name: Upload SARIF file
+      if: ${{ inputs.command == 'sarif' }}
       uses: github/codeql-action/upload-sarif@v2
       with:
         sarif_file: contrast.sarif
