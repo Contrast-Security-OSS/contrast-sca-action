@@ -181,29 +181,6 @@ runs:
         echo "Running the Contrast Audit Command..."
         ./contrast audit ${{ steps.required-args.outputs.args }} ${{ steps.optional-args.outputs.args }} --track --log --save >> output.txt
 
-    - name: Run Contrast Sarif CLI Command
-      if: ${{ inputs.command == 'sarif' }}
-      continue-on-error: true
-      id: run-sarif
-      shell: bash
-      run: |
-        echo "Running the Contrast Sarif Command..."
-        ./contrast sarif ${{ steps.required-args.outputs.args }} ${{ steps.optional-args.outputs.args }} 
-        echo sarif=$(cat contrast.sarif) >> $GITHUB_OUTPUT
-
-    - name: Upload SARIF file
-      if: ${{ inputs.command == 'sarif' }}
-      uses: github/codeql-action/upload-sarif@v3
-      with:
-        sarif_file: contrast.sarif
-
-    - name: Upload sarif file to summary
-      if: ${{ inputs.command == 'sarif' }}
-      uses: actions/upload-artifact@v3
-      with:
-        name: contrast.sarif
-        path: contrast.sarif
-
     - name: Send Output to Step Summary
       if: ${{ inputs.command == 'audit' }}
       shell: bash
@@ -250,3 +227,26 @@ runs:
           echo "Audit failed check logs in ${{ steps.get-log-out-name.outputs.log_out_name }}.contrast.log for more info"
           exit 1
         fi
+
+    - name: Run Contrast Sarif CLI Command
+      if: ${{ inputs.command == 'sarif' }}
+      continue-on-error: true
+      id: run-sarif
+      shell: bash
+      run: |
+        echo "Running the Contrast Sarif Command..."
+        ./contrast sarif ${{ steps.required-args.outputs.args }} ${{ steps.optional-args.outputs.args }} 
+        echo sarif=$(cat contrast.sarif) >> $GITHUB_OUTPUT
+    - name: Upload sarif file to summary
+      if: ${{ inputs.command == 'sarif' }}
+      uses: actions/upload-artifact@v3
+      with:
+        name: contrast.sarif
+        path: contrast.sarif
+
+    - name: Upload SARIF file
+      if: ${{ inputs.command == 'sarif' }}
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: contrast.sarif
+
