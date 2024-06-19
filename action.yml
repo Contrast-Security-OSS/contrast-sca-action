@@ -54,6 +54,9 @@ inputs:
     description: 'Sets the timeout for an audit in seconds, Default: 600 (10 minutes)'
     required: false
     default: '600'
+  legacy:
+    description: 'When set to true, uses the legacy audit command.'
+    required: false
 
   command:
     description: 'Command to run cli with audit/fingerprint'
@@ -125,6 +128,9 @@ runs:
         fi
         if [ "${{inputs.ignoreDev}}" = true ]; then
           args+=("--ignore-dev")
+        fi
+        if [ "${{inputs.legacy}}" = true ]; then
+          args+=("--legacy")
         fi
         if [ "${{inputs.outputSummary}}" = true ]; then          
           echo "OUTPUT_SUMMARY=true" >> $GITHUB_ENV
