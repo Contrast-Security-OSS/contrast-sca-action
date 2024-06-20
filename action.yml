@@ -64,6 +64,10 @@ inputs:
     description: 'When set to true, will upload sarif to the GHAS integration'
     required: false
     default: 'true'
+  legacy:
+    description: 'When set to true, uses the legacy audit command.'
+    required: false
+
 
   command:
     description: 'Command to run cli with audit/fingerprint/sarif'
@@ -143,6 +147,9 @@ runs:
         fi
         if [ "${{inputs.ignoreDev}}" = true ]; then
           args+=("--ignore-dev")
+        fi
+        if [ "${{inputs.legacy}}" = true ]; then
+          args+=("--legacy")
         fi
         if [ "${{inputs.outputSummary}}" = true ]; then          
           echo "OUTPUT_SUMMARY=true" >> $GITHUB_ENV
