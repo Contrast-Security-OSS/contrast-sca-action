@@ -130,6 +130,10 @@ runs:
           args+=("--timeout")
           args+=("${{ inputs.auditTimeout}}")
         fi
+        if [ "${{ inputs.command}}" == 'sarif']; then
+          args+=("--severity")
+          args+=("${{ inputs.severity }}")
+        fi
         if [ -n "${{inputs.metadata}}" ]; then
           args+=("--metadata")
           args+=("${{ inputs.metadata }}")
