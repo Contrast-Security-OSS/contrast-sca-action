@@ -124,7 +124,7 @@ runs:
           args+=("--file")
           args+=("${{ inputs.filePath }}")
         fi
-        if [ ${{ inputs.command == 'audit' }} ]; then
+        if [ "${{ inputs.command}}" == 'audit']; then
           args+=("--severity")
           args+=("${{ inputs.severity }}")
           args+=("--timeout")
