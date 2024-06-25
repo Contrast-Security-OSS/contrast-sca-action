@@ -80,7 +80,7 @@ runs:
     - name: Get Latest CLI
       run: |
         echo "Downloading Contrast CLI 2.2.0"
-        curl --location 'https://pkg.contrastsecurity.com/artifactory/cli/v2/2.2.0/linux/contrast' --output contrast
+        curl --location 'https://pkg.contrastsecurity.com/artifactory/cli/v2/2.2.0-PRE-RELEASE/linux/contrast' --output contrast
       shell: bash
     - run: chmod +x contrast
       shell: bash
