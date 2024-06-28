@@ -23,6 +23,9 @@ inputs:
   projectGroupId:
     description: 'The ID of your project Groups.'
     required: false
+  applicationId:
+    description: 'The ID of your application.'
+    required: false
   apiUrl:
     description: 'The name of the host. Includes the protocol section of the URL (https://). Defaults to https://ce.contrastsecurity.com. (optional)'
     required: false
@@ -54,12 +57,20 @@ inputs:
     description: 'Sets the timeout for an audit in seconds, Default: 600 (10 minutes)'
     required: false
     default: '600'
+  metadata:
+    description: 'Metadata filter to be passed to the Contrast CLI when running sarif command'
+    required: false
+  ghasEnabled:
+    description: 'When set to true, will upload sarif to the GHAS integration'
+    required: false
+    default: 'true'
   legacy:
     description: 'When set to true, uses the legacy audit command.'
     required: false
 
+
   command:
-    description: 'Command to run cli with audit/fingerprint'
+    description: 'Command to run cli with audit/fingerprint/sarif'
     required: false
     default: audit
 
@@ -68,8 +79,8 @@ runs:
   steps:
     - name: Get Latest CLI
       run: |
-        echo "Downloading Contrast CLI 2.1.5"
-        curl --location 'https://pkg.contrastsecurity.com/artifactory/cli/v2/2.1.6/linux/contrast' --output contrast
+        echo "Downloading Contrast CLI 2.2.0"
+        curl --location 'https://pkg.contrastsecurity.com/artifactory/cli/v2/2.2.0/linux/contrast' --output contrast
       shell: bash
     - run: chmod +x contrast
       shell: bash
@@ -113,11 +124,23 @@ runs:
           args+=("--file")
           args+=("${{ inputs.filePath }}")
         fi
-        if [ ${{ inputs.command == 'audit' }} ]; then
+        if [ "${{ inputs.command}}" == 'audit']; then
           args+=("--severity")
           args+=("${{ inputs.severity }}")
           args+=("--timeout")
           args+=("${{ inputs.auditTimeout}}")
+        fi
+        if [ "${{ inputs.command}}" == 'sarif']; then
+          args+=("--severity")
+          args+=("${{ inputs.severity }}")
+        fi
+        if [ -n "${{inputs.metadata}}" ]; then
+          args+=("--metadata")
+          args+=("${{ inputs.metadata }}")
+        fi
+        if [ -n "${{inputs.applicationId}}" ]; then
+          args+=("--application-id")
+          args+=("${{ inputs.applicationId }}")
         fi
         if [ -n "${{inputs.projectGroupId}}" ]; then
           args+=("--project-group-id")
@@ -151,14 +174,14 @@ runs:
         echo fingerprint=$(cat fingerPrintInfo.json) >> $GITHUB_OUTPUT
 
     - name: Upload output file
-      if: ${{ inputs.command != 'audit' }}
+      if: ${{ inputs.command == 'fingerprint' }}
       uses: actions/upload-artifact@v3
       with:
         name: fingerPrintInfo.json
         path: fingerPrintInfo.json
 
     - name: Upload log file
-      if: ${{ inputs.command != 'audit' }}
+      if: ${{ inputs.command == 'fingerprint' }}
       uses: actions/upload-artifact@v3
       with:
         name: fingerPrint.log
@@ -219,3 +242,26 @@ runs:
           echo "Audit failed check logs in ${{ steps.get-log-out-name.outputs.log_out_name }}.contrast.log for more info"
           exit 1
         fi
+
+    - name: Run Contrast Sarif CLI Command
+      if: ${{ inputs.command == 'sarif' }}
+      continue-on-error: true
+      id: run-sarif
+      shell: bash
+      run: |
+        echo "Running the Contrast Sarif Command..."
+        ./contrast sarif ${{ steps.required-args.outputs.args }} ${{ steps.optional-args.outputs.args }} 
+        echo sarif=$(cat contrast.sarif) >> $GITHUB_OUTPUT
+    - name: Upload sarif file to summary
+      if: ${{ inputs.command == 'sarif' }}
+      uses: actions/upload-artifact@v4
+      with:
+        name: contrast.sarif
+        path: contrast.sarif
+
+    - name: Upload SARIF file
+      if: ${{ inputs.command == 'sarif' && inputs.ghasEnabled == 'true'}}
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: contrast.sarif
+
