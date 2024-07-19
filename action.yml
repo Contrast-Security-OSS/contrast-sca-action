@@ -266,7 +266,7 @@ runs:
     
     - name: Upload sarif file to summary
       if: ${{ inputs.command == 'sarif'}}
-      uses: actions/upload-artifact@v${{IS_GHES && '3' || '4' }}
+      uses: actions/upload-artifact@v${{(env.GITHUB_SERVER_URL) && '3' || '4' }}
       with:
         name: contrast.sarif
         path: contrast.sarif
