@@ -164,6 +164,11 @@ runs:
         else
           echo "OUTPUT_SUMMARY=false" >> $GITHUB_ENV
         fi
+        if [ "${{inputs.is_ghes}}" = true ]; then          
+          echo "IS_GHES=true" >> $GITHUB_ENV
+        else
+          echo "IS_GHES=false" >> $GITHUB_ENV
+        fi
 
         echo "args=${args[@]}" >> $GITHUB_OUTPUT
 
@@ -216,7 +221,7 @@ runs:
         echo "log_out_name=$filename" >> "$GITHUB_OUTPUT"
 
     - name: Upload log file
-      if: ${{ inputs.command == 'audit' }}
+      if: ${{ inputs.command == 'audit' && inputs.is_ghes}}
       uses: actions/upload-artifact@v${{ inputs.is_ghes && '3' || '4' }}
       with:
         name: ${{ steps.get-log-out-name.outputs.log_out_name }}.contrast.log
@@ -231,11 +236,13 @@ runs:
         echo "sbom_filename=$filename" >> "$GITHUB_OUTPUT"
 
     - name: Upload sbom file
-      if: ${{ inputs.command == 'audit' && steps.run-audit.outcome=='success'}}
-      uses: actions/upload-artifact@v${{ inputs.is_ghes && '3' || '4' }}
+      if: ${{ inputs.command == 'audit' && steps.run-audit.outcome=='success' && inputs.is_ghes}}
+      uses: actions/upload-artifact@v3
       with:
         name: sbom.json
         path: ${{ steps.get-sbom-filename.outputs.sbom_filename }}
+
+
 
 
     - name: Check Audit outcome
@@ -256,12 +263,14 @@ runs:
         echo "Running the Contrast Sarif Command..."
         ./contrast sarif ${{ steps.required-args.outputs.args }} ${{ steps.optional-args.outputs.args }} 
         echo sarif=$(cat contrast.sarif) >> $GITHUB_OUTPUT
+    
     - name: Upload sarif file to summary
-      if: ${{ inputs.command == 'sarif' }}
-      uses: actions/upload-artifact@v${{ inputs.is_ghes }} '3' || '4' }}
+      if: ${{ inputs.command == 'sarif'}}
+      uses: actions/upload-artifact@v${{IS_GHES && '3' || '4' }}
       with:
         name: contrast.sarif
         path: contrast.sarif
+        
 
     - name: Upload SARIF file
       if: ${{ inputs.command == 'sarif' && inputs.ghasEnabled == 'true'}}
