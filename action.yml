@@ -67,6 +67,10 @@ inputs:
   legacy:
     description: 'When set to true, uses the legacy audit command.'
     required: false
+  is_ghes:
+    description: 'Set to true if running on GitHub Enterprise Server'
+    required: false
+    default: 'false'  
 
 
   command:
@@ -213,7 +217,7 @@ runs:
 
     - name: Upload log file
       if: ${{ inputs.command == 'audit' }}
-      uses: actions/upload-artifact@v${{ (env.GITHUB_ENTERPRISE_SERVER_URL != '' || env.RUNNER_TRACKING_ID != '') && '3' || '4' }}
+      uses: actions/upload-artifact@v${{ inputs.is_ghes && '3' || '4' }}
       with:
         name: ${{ steps.get-log-out-name.outputs.log_out_name }}.contrast.log
         path: contrast.log
@@ -228,7 +232,7 @@ runs:
 
     - name: Upload sbom file
       if: ${{ inputs.command == 'audit' && steps.run-audit.outcome=='success'}}
-      uses: actions/upload-artifact@v${{ (env.GITHUB_ENTERPRISE_SERVER_URL != '' || env.RUNNER_TRACKING_ID != '') && '3' || '4' }}
+      uses: actions/upload-artifact@v${{ inputs.is_ghes && '3' || '4' }}
       with:
         name: sbom.json
         path: ${{ steps.get-sbom-filename.outputs.sbom_filename }}
@@ -254,7 +258,7 @@ runs:
         echo sarif=$(cat contrast.sarif) >> $GITHUB_OUTPUT
     - name: Upload sarif file to summary
       if: ${{ inputs.command == 'sarif' }}
-      uses: actions/upload-artifact@v${{ (env.GITHUB_ENTERPRISE_SERVER_URL != '' || env.RUNNER_TRACKING_ID != '') && '3' || '4' }}
+      uses: actions/upload-artifact@v${{ inputs.is_ghes && '3' || '4' }}
       with:
         name: contrast.sarif
         path: contrast.sarif
