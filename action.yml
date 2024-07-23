@@ -175,14 +175,14 @@ runs:
 
     - name: Upload output file
       if: ${{ inputs.command == 'fingerprint' }}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: fingerPrintInfo.json
         path: fingerPrintInfo.json
 
     - name: Upload log file
       if: ${{ inputs.command == 'fingerprint' }}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: fingerPrint.log
         path: contrast.log
@@ -213,7 +213,7 @@ runs:
 
     - name: Upload log file
       if: ${{ inputs.command == 'audit' }}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: ${{ steps.get-log-out-name.outputs.log_out_name }}.contrast.log
         path: contrast.log
