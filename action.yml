@@ -228,7 +228,7 @@ runs:
 
     - name: Upload sbom file
       if: ${{ inputs.command == 'audit' && steps.run-audit.outcome=='success'}}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: sbom.json
         path: ${{ steps.get-sbom-filename.outputs.sbom_filename }}
