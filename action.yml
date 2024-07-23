@@ -124,13 +124,13 @@ runs:
           args+=("--file")
           args+=("${{ inputs.filePath }}")
         fi
-        if [ "${{ inputs.command}}" == 'audit']; then
+        if [ "${{ inputs.command == 'audit' }}"]; then
           args+=("--severity")
           args+=("${{ inputs.severity }}")
           args+=("--timeout")
           args+=("${{ inputs.auditTimeout}}")
         fi
-        if [ "${{ inputs.command}}" == 'sarif']; then
+        if [ "${{ inputs.command == 'sarif' }}"]; then
           args+=("--severity")
           args+=("${{ inputs.severity }}")
         fi
