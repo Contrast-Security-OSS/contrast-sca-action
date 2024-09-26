@@ -166,7 +166,7 @@ runs:
 
         echo "args=${args[@]}" >> $GITHUB_OUTPUT
 
-    - name: Generate Upload Suffix Suffix
+    - name: Generate Upload Suffix
       id: upload-suffix
       shell: bash
       run: |
