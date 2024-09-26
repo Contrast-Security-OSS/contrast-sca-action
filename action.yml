@@ -67,6 +67,9 @@ inputs:
   legacy:
     description: 'When set to true, uses the legacy audit command.'
     required: false
+  modifier:
+    description: 'When set this will be added as a suffix to the output file name.'
+    required: false
 
 
   command:
@@ -163,6 +166,16 @@ runs:
 
         echo "args=${args[@]}" >> $GITHUB_OUTPUT
 
+    - name: Generate Upload Suffix Suffix
+      id: upload-suffix
+      shell: bash
+      run: |
+        if [ -n "${{ inputs.modifier }}" ]; then
+          echo "suffix=-${{ inputs.modifier }}" >>  "$GITHUB_OUTPUT"
+        else
+         random_suffix=$(openssl rand -base64 4 | tr -dc 'a-zA-Z0-9')
+         echo "suffix=-$random_suffix" >>  "$GITHUB_OUTPUT"
+
     - name: Run Contrast Fingerprint CLI Command
       if: ${{ inputs.command == 'fingerprint' }}
       id: run-fingerprint
@@ -175,9 +188,9 @@ runs:
 
     - name: Upload output file
       if: ${{ inputs.command == 'fingerprint' }}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
-        name: fingerPrintInfo.json
+        name: fingerPrintInfo${{steps.upload-suffix.outputs.suffix}}.json
         path: fingerPrintInfo.json
 
     - name: Upload log file
