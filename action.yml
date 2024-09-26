@@ -173,7 +173,9 @@ runs:
         if [ -n "${{ inputs.modifier }}" ]; then
           echo "suffix=-${{ inputs.modifier }}" >>  "$GITHUB_OUTPUT"
         else
-         echo "suffix=" >>  "$GITHUB_OUTPUT"
+         random_suffix=$(openssl rand -base64 4 | tr -dc 'a-zA-Z0-9')
+         echo "suffix=-$random_suffix" >>  "$GITHUB_OUTPUT"
+        fi
 
     - name: Run Contrast Fingerprint CLI Command
       if: ${{ inputs.command == 'fingerprint' }}
