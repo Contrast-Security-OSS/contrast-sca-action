@@ -171,14 +171,35 @@ jobs:
 
 All Contrast Security related account secrets should be configured as GitHub secrets and will be passed via environment variables in the GitHub runner.
 
-## Required inputs
-- apiKey - An API key from the Contrast Security platform.
-- authHeader - User authorization credentials from Contrast Security.
-- orgId - The ID of your organization in Contrast Security.
-- filePath - Specify the path for project configuration file (e.g. lib/package.json) .
-- apiUrl - Required for Licensed Contrast Users only. This input includes the protocol section of the URL (https://). The default value is `https://ce.contrastsecurity.com` (Contrast Community Edition).
-## Optional inputs
-- severity - Allows user to report libraries with vulnerabilities above a chosen severity level. Values for level are high, medium or low. (Note: Use this input in combination with the fail input, otherwise the action will exit)
-- fail - When set to true, fails the action if CVEs have been detected that match at least the severity option specified.
-- ignoreDev - When set to true, excludes developer dependencies from the results.
-- outputSummary - Defaults to true.  When set to true, writes the output of the audit to the GitHub Actions Summary.
+This section details the various inputs you can use with this Contrast Security GitHub Action. Inputs marked as "required" must be provided for the action to function correctly.
+
+## Inputs
+
+### Required Inputs
+
+- apiKey: An agent API key provided by Contrast (required).
+- authHeader: User authorization credentials provided by Contrast (required).
+- orgId: The ID of your organization in Contrast (required).
+- filePath: Specify the directory in which to search for project configuration files (required).
+
+### Command Input
+
+- command: Command to run cli with audit/fingerprint/sarif (optional, defaults to "audit")
+### Optional Inputs
+
+- repositoryId: The ID of your repo. (optional)
+- projectGroupId: The ID of your project Groups. (optional)
+- applicationId: The ID of your application. (optional)
+- apiUrl: The name of the host. Includes the protocol section of the URL (https://). Defaults to https://ce.contrastsecurity.com. (optional, defaults to "https://ce.contrastsecurity.com")
+- severity: Allows user to report libraries with vulnerabilities above a chosen severity level. Values for level are high, medium or low. (Note: Use this input in combination with the fail input, otherwise the action will exit) (optional, defaults to "CRITICAL")   
+- fail: When set to true, fails the action if CVEs have been detected that match at least the severity option specified. (optional)
+- ignoreDev: When set to true, excludes developer dependencies from the results. (optional)
+- outputSummary: Defaults to true. When set to true, writes the output of the audit to the GitHub Actions Summary. (optional, defaults to "true")
+- repoUrl: When set, will pass the optional repo url parameter to the contrast cli (optional)
+- repoName: When set, will pass the optional repo name parameter to the contrast cli (optional)
+- externalId: When set, will pass the optional external id parameter to the contrast cli (optional)
+- auditTimeout: Sets the timeout for an audit in seconds, Default: 600 (10 minutes) (optional, defaults to "600")
+- metadata: Metadata filter to be passed to the Contrast CLI when running sarif command (optional)
+- ghasEnabled: When set to true, will upload sarif to the GHAS integration (optional, defaults to "true")
+- legacy: When set to true, uses the legacy audit command. (optional)
+- modifier: When set this will be added as a suffix to the output file names for logs and sboms uploaded to the summary page. (optional, defaults to random string)
