@@ -33,4 +33,4 @@ jobs:
         with:
           tag_name: ${{ steps.version.outputs.version }}
           token: ${{secrets.SCA_OSS_PAT}} # Used so pipeline gets triggered from this one 
-          # See https://docs.github.com/en/actions/using-workflows/triggering-a-workflow#triggering-a-workflow-from-a-workflow
+          #See https://docs.github.com/en/actions/using-workflows/triggering-a-workflow#triggering-a-workflow-from-a-workflow
