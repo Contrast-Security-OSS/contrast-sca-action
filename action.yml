@@ -67,6 +67,9 @@ inputs:
   legacy:
     description: 'When set to true, uses the legacy audit command.'
     required: false
+  modifier:
+    description: 'When set this will be added as a suffix to the output file name.'
+    required: false
 
 
   command:
@@ -163,6 +166,17 @@ runs:
 
         echo "args=${args[@]}" >> $GITHUB_OUTPUT
 
+    - name: Generate Upload Suffix
+      id: upload-suffix
+      shell: bash
+      run: |
+        if [ -n "${{ inputs.modifier }}" ]; then
+          echo "suffix=-${{ inputs.modifier }}" >>  "$GITHUB_OUTPUT"
+        else
+         random_suffix=$(openssl rand -base64 3 | tr -dc 'a-zA-Z0-9')
+         echo "suffix=-$random_suffix" >>  "$GITHUB_OUTPUT"
+        fi
+
     - name: Run Contrast Fingerprint CLI Command
       if: ${{ inputs.command == 'fingerprint' }}
       id: run-fingerprint
@@ -175,16 +189,16 @@ runs:
 
     - name: Upload output file
       if: ${{ inputs.command == 'fingerprint' }}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
-        name: fingerPrintInfo.json
+        name: fingerPrintInfo${{steps.upload-suffix.outputs.suffix}}.json
         path: fingerPrintInfo.json
 
     - name: Upload log file
       if: ${{ inputs.command == 'fingerprint' }}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
-        name: fingerPrint.log
+        name: fingerPrint${{steps.upload-suffix.outputs.suffix}}.log
         path: contrast.log
 
     - name: Run Contrast Audit CLI Command
@@ -213,9 +227,9 @@ runs:
 
     - name: Upload log file
       if: ${{ inputs.command == 'audit' }}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
-        name: ${{ steps.get-log-out-name.outputs.log_out_name }}.contrast.log
+        name: ${{ steps.get-log-out-name.outputs.log_out_name }}${{steps.upload-suffix.outputs.suffix}}.contrast.log
         path: contrast.log
 
     - name: Get SBOM filename
@@ -228,9 +242,9 @@ runs:
 
     - name: Upload sbom file
       if: ${{ inputs.command == 'audit' && steps.run-audit.outcome=='success'}}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
-        name: sbom.json
+        name: sbom${{steps.upload-suffix.outputs.suffix}}.json
         path: ${{ steps.get-sbom-filename.outputs.sbom_filename }}
 
 
@@ -254,9 +268,9 @@ runs:
         echo sarif=$(cat contrast.sarif) >> $GITHUB_OUTPUT
     - name: Upload sarif file to summary
       if: ${{ inputs.command == 'sarif' }}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
-        name: contrast.sarif
+        name: contrast${{steps.upload-suffix.outputs.suffix}}.sarif
         path: contrast.sarif
 
     - name: Upload SARIF file
