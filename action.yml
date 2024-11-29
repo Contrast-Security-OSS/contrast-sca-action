@@ -161,7 +161,7 @@ runs:
         if [ "${{inputs.outputSummary}}" = true ]; then          
           echo "OUTPUT_SUMMARY=true" >> $GITHUB_ENV
         else
-          echo "OUTPUT_SUMMARY=false" >> $GITHUB_ENV
+          echo "OUTPUT_SUMMARY=" >> $GITHUB_ENV
         fi
 
         echo "args=${args[@]}" >> $GITHUB_OUTPUT
