@@ -70,6 +70,9 @@ inputs:
   modifier:
     description: 'When set this will be added as a suffix to the output file name.'
     required: false
+  name:
+    description: 'Contrast project name. If not specified, Contrast uses the file folder name to identify the project or creates a new project'
+    required: false
 
 
   command:
@@ -157,6 +160,10 @@ runs:
         fi
         if [ "${{inputs.legacy}}" = true ]; then
           args+=("--legacy")
+        fi
+        if [ -n "${{inputs.name}}" ]; then
+          args+=("--name")
+          args+=("${{ inputs.name }}")
         fi
         if [ "${{inputs.outputSummary}}" = true ]; then          
           echo "OUTPUT_SUMMARY=true" >> $GITHUB_ENV
