@@ -44,6 +44,9 @@ inputs:
     description: 'Defaults to true.  When set to true, writes the output of the audit to the GitHub Actions Summary.'
     required: false
     default: 'true'
+  proxy:
+    description: 'When set will pass the proxy url to the contrast cli'
+    required: false
   repoUrl:
     description: 'When set, will pass the optional repo url parameter to the contrast cli'
     required: false
@@ -164,6 +167,10 @@ runs:
         if [ -n "${{inputs.name}}" ]; then
           args+=("--name")
           args+=("${{ inputs.name }}")
+        fi
+        if [ -n "${{inputs.proxy}}" ]; then
+          args+=("--proxy")
+          args+=("${{ inputs.proxy }}")
         fi
         if [ "${{inputs.outputSummary}}" = true ]; then          
           echo "OUTPUT_SUMMARY=true" >> $GITHUB_ENV
