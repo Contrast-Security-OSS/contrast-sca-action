@@ -80,7 +80,7 @@ jobs:
           mvn clean install -DskipTests
 
       - name: Contrast SCA Action
-        uses: Contrast-Security-OSS/contrast-sca-action@v1
+        uses: Contrast-Security-OSS/contrast-sca-action@main
         with:
           apiKey: ${{ secrets.CONTRAST_API_KEY }}
           orgId: ${{ secrets.CONTRAST_ORGANIZATION_ID }}
@@ -109,7 +109,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Contrast SCA Action
-        uses: Contrast-Security-OSS/contrast-sca-action@v1
+        uses: Contrast-Security-OSS/contrast-sca-action@main
         with:
           apiKey: ${{ secrets.CONTRAST_API_KEY }}
           orgId: ${{ secrets.CONTRAST_ORGANIZATION_ID }}
@@ -142,7 +142,7 @@ jobs:
       - uses: php-actions/composer@v6
 
       - name: Contrast SCA Action
-        uses: Contrast-Security-OSS/contrast-sca-action@v1
+        uses: Contrast-Security-OSS/contrast-sca-action@main
         with:
           apiKey: ${{ secrets.CONTRAST_API_KEY }}
           orgId: ${{ secrets.CONTRAST_ORGANIZATION_ID }}
