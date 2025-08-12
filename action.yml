@@ -76,7 +76,9 @@ inputs:
   name:
     description: 'Contrast project name. If not specified, Contrast uses the file folder name to identify the project or creates a new project'
     required: false
-
+  resourceGroup:
+    description: 'Resource group to assign newly created projects to'
+    required: false
 
   command:
     description: 'Command to run cli with audit/fingerprint/sarif'
@@ -167,6 +169,10 @@ runs:
         if [ -n "${{inputs.name}}" ]; then
           args+=("--name")
           args+=("${{ inputs.name }}")
+        fi
+        if [ -n "${{inputs.resourceGroup}}" ]; then
+          args+=("--resource-group")
+          args+=("${{ inputs.resourceGroup }}")
         fi
         if [ -n "${{inputs.proxy}}" ]; then
           args+=("--proxy")
