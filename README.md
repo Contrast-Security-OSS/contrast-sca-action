@@ -200,6 +200,7 @@ This section details the various inputs you can use with this Contrast Security 
 - externalId: When set, will pass the optional external id parameter to the contrast cli (optional)
 - auditTimeout: Sets the timeout for an audit in seconds, Default: 600 (10 minutes) (optional, defaults to "600")
 - metadata: Metadata filter to be passed to the Contrast CLI when running sarif command (optional)
+- sarifToolType: Tool type to include in the sarif file. One of SCA or ASSESS. (optional, if not specified, both will be included)'
 - ghasEnabled: When set to true, will upload sarif to the GHAS integration (optional, defaults to "true")
 - legacy: When set to true, uses the legacy audit command. (optional)
 - modifier: When set this will be added as a suffix to the output file names for logs and sboms uploaded to the summary page. (optional, defaults to a random string)
