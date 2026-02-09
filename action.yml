@@ -63,6 +63,9 @@ inputs:
   metadata:
     description: 'Metadata filter to be passed to the Contrast CLI when running sarif command'
     required: false
+  sarifToolType:
+    description: 'Tool type to include in the sarif file. One of SCA or ASSESS. If not specified, both will be included.'
+    required: false
   ghasEnabled:
     description: 'When set to true, will upload sarif to the GHAS integration'
     required: false
@@ -148,6 +151,10 @@ runs:
         if [ -n "${{inputs.metadata}}" ]; then
           args+=("--metadata")
           args+=("${{ inputs.metadata }}")
+        fi
+        if [ -n "${{inputs.sarifToolType}}" ]; then
+          args+=("--tool-type")
+          args+=("${{ inputs.sarifToolType }}")
         fi
         if [ -n "${{inputs.applicationId}}" ]; then
           args+=("--application-id")
