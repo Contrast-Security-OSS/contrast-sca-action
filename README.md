@@ -35,7 +35,7 @@ up. After which, complete the following steps:
         branches:
           - "main"
     ```
-4. Update the filepath in the workflow file to specfy the location of the project configuration file where dependencies are declared
+4. Update the filepath in the workflow file to specify the location of the project configuration file where dependencies are declared
 
     ```yaml
               filePath: package.json
