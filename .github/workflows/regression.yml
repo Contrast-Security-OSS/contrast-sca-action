@@ -7,8 +7,13 @@ jobs:
   trigger_tests:
     runs-on: ubuntu-latest
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@a5ad31d6a139d249332a2605b85202e8c0b78450 # v2.19.1
+        with:
+          egress-policy: audit
+
       - name: Trigger Tests and Wait
-        uses: convictional/trigger-workflow-and-wait@v1.6.1
+        uses: step-security/trigger-workflow-and-wait@2db092a5d69980fd4e874eec7430854f8e3a645f # v1.6.6
         with:
           owner: Contrast-Security-Inc
           repo: contrast-github-actions-regression
